@@ -14,7 +14,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
-    readJSONFile(`./${filePath}`);
+    readJSONFile(filePath.toString());
 });
 
 async function readJSONFile(filePath) {
