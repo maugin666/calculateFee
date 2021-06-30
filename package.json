@@ -1,26 +1,30 @@
 {
-  "name": "calculatefee",
-  "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "main": "index.js",
-  "exports": {
-    "./": "./src/"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maugin666/calculateFee.git"
-  },
-  "author": "Eugeniia Levanova",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/maugin666/calculateFee/issues"
-  },
-  "homepage": "https://github.com/maugin666/calculateFee#readme",
-  "dependencies": {
-    "moment": "^2.29.1"
-  }
+    "name": "calculatefee",
+    "version": "1.0.0",
+    "author": "Eugeniia Levanova",
+    "license": "ISC",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/maugin666/calculateFee.git"
+    },
+    "bugs": {
+        "url": "https://github.com/maugin666/calculateFee/issues"
+    },
+    "homepage": "https://github.com/maugin666/calculateFee#readme",
+    "dependencies": {
+        "moment": "^2.29.1"
+    },
+    "devDependencies": {
+        "jest": "^27.0.6"
+    },
+    "jest": {
+        "verbose": true,
+        "testEnvironment": "jest-environment-node",
+        "transform": {}
+    }
 }
