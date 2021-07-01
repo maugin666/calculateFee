@@ -11,7 +11,7 @@ npm install
 Then
 
 ```
-node app.js ./input.json
+node app.js input.json
 ```
 
 Where `./input.json` is a path to `json` file.
