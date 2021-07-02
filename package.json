@@ -19,7 +19,7 @@
     },
     "homepage": "https://github.com/maugin666/calculateFee#readme",
     "dependencies": {
-        "moment": "^2.29.1"
+        "date-fns": "^2.22.1"
     },
     "devDependencies": {
         "eslint": "^7.29.0",

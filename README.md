@@ -14,7 +14,7 @@ Then
 node app.js input.json
 ```
 
-Where `./input.json` is a path to `json` file.
+Where `input.json` is a path to `json` file.
 The file must contain an array of objects of the given structure
 
 ```
