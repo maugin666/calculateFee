@@ -6,7 +6,7 @@
     "description": "Calculates commission fees for cash in and cash out",
     "main": "app.js",
     "scripts": {
-        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+        "test": "node node_modules/jest/bin/jest.js",
         "lint": "./node_modules/.bin/eslint",
         "precommit": "eslint ."
     },
@@ -19,19 +19,19 @@
     },
     "homepage": "https://github.com/maugin666/calculateFee#readme",
     "dependencies": {
-        "date-fns": "^2.22.1"
+        "date-fns": "^2.22.1",
+        "dotenv": "^10.0.0",
+        "node-fetch-cache": "^2.0.1"
     },
     "devDependencies": {
-        "eslint": "^7.29.0",
-        "eslint-config-airbnb": "^18.2.1",
-        "eslint-config-node": "^4.1.0",
+        "eslint": "^7.30.0",
+        "eslint-config-airbnb-base": "^14.2.1",
         "eslint-plugin-import": "^2.23.4",
         "husky": "^6.0.0",
         "jest": "^27.0.6"
     },
     "jest": {
         "verbose": true,
-        "testEnvironment": "jest-environment-node",
-        "transform": {}
+        "testEnvironment": "jest-environment-node"
     }
 }
