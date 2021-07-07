@@ -1,36 +1,24 @@
 const { fetchData } = require('../utils/fetchData/fetchData');
 
+const cashService = () => ({
+  fetchCashIn: () => fetchData('cash-in'),
+  fetchCashOutNatural: () => fetchData('cash-out-natural'),
+  fetchCashOutJuridical: () => fetchData('cash-out-juridical'),
+});
+
 async function getFees() {
-  let cashInFee;
-  let maxCashInFeeAmount;
-  let naturalCashOutFee;
-  let perWeekAmount;
-  let juridicalCashOutFee;
-  let minJuridicalCashOutFeeAmount;
-
   try {
-    const cashIn = await fetchData('cash-in');
-    cashInFee = cashIn.percents;
-    maxCashInFeeAmount = cashIn.max.amount;
-
-    const cashOutNatural = await fetchData('cash-out-natural');
-    naturalCashOutFee = cashOutNatural.percents;
-    perWeekAmount = cashOutNatural.week_limit.amount;
-
-    const cashOutJuridical = await fetchData('cash-out-juridical');
-    juridicalCashOutFee = cashOutJuridical.percents;
-    minJuridicalCashOutFeeAmount = cashOutJuridical.min.amount;
+    const cashInFee = await cashService().fetchCashIn();
+    const cashOutNatural = await cashService().fetchCashOutNatural();
+    const cashOutJuridical = await cashService().fetchCashOutJuridical();
 
     return {
       cashInFee,
-      maxCashInFeeAmount,
-      naturalCashOutFee,
-      perWeekAmount,
-      juridicalCashOutFee,
-      minJuridicalCashOutFeeAmount,
+      cashOutNatural,
+      cashOutJuridical,
     };
   } catch (error) {
-    console.error(error);
+    throw new Error(error);
   }
 }
 

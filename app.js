@@ -1,16 +1,16 @@
 require('dotenv').config();
 const { readFile } = require('fs').promises;
 
-const filePath = process.argv.slice(2);
 const { calculateFee } = require('./src/calculateFee/calculateFee');
 
-async function init(filePath) {
+async function init() {
+  const filePath = process.argv.slice(2);
   try {
-    const data = await readFile(filePath, { encoding: 'utf8' });
-    calculateFee(JSON.parse(data));
+    const data = await readFile(filePath.toString(), { encoding: 'utf8' });
+    await calculateFee(JSON.parse(data));
   } catch (error) {
-    throw new Error(error.message);
+    console.error(error);
   }
 }
 
-init(filePath.toString());
+init();
