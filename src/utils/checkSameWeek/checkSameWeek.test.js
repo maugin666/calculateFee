@@ -17,4 +17,3 @@ describe('checkSameWeek', () => {
     expect(() => checkSameWeek('2021-99-99', '2021-99-99')).toThrow(Error);
   });
 });
-

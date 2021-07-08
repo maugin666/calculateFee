@@ -1,4 +1,4 @@
-const { getFees } = require('./operationFees');
+const { getFees, cashService } = require('./operationFees');
 
 describe('getFees', () => {
   test('getFees returns correct data', async () => {
@@ -27,7 +27,9 @@ describe('getFees', () => {
     };
     await expect(getFees()).resolves.toStrictEqual(obj);
   });
-  test('getFees throws error any of endpoints breaks', async () => {
-    await expect(() => getFees()).rejects.toEqual(Error);
+  test('getFees throws error any of endpoints breaks', () => {
+    const service = jest.fn(() => cashService().fetchCashIn);
+    service.mockResolvedValue(Promise.reject(Error));
+    expect(getFees()).rejects.toThrow(Error);
   });
 });

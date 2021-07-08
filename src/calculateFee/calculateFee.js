@@ -4,7 +4,6 @@ const { roundFee } = require('../utils/roundFee/roundFee');
 const {
   cashIn, cashOut, natural, juridical, currency,
 } = require('../constants');
-const { getFees } = require('../operationFees/operationFees');
 
 function calculateNaturalCashOutFee() {
   const cashOutUsers = [];
@@ -66,10 +65,9 @@ function calculateJuridicalCashOutFee(transaction, cashOutJuridical) {
   return fee < minJuridicalCashOutFeeAmount ? minJuridicalCashOutFeeAmount : fee;
 }
 
-async function calculateFee(transactions) {
+async function calculateFee(transactions, { cashInFee, cashOutNatural, cashOutJuridical }) {
   if (!(transactions instanceof Array)) return Promise.reject(new Error('Wrong data.'));
   if (transactions.length === 0) return Promise.reject(new Error('Empty array of transactions.'));
-  const { cashInFee, cashOutNatural, cashOutJuridical } = await getFees();
   const countFee = calculateNaturalCashOutFee();
   let output;
 

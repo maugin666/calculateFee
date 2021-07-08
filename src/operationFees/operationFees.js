@@ -25,4 +25,4 @@ async function getFees() {
   };
 }
 
-module.exports = { getFees };
+module.exports = { getFees, cashService };
