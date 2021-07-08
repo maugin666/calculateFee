@@ -1,20 +1,33 @@
 const { getFees } = require('./operationFees');
 
-describe('src', () => {
-  describe('getFees', () => {
-    test('getFees returns object', async () => {
-      const obj = {
-        cashInFee: 0.03,
-        juridicalCashOutFee: 0.3,
-        maxCashInFeeAmount: 5,
-        minJuridicalCashOutFeeAmount: 0.5,
-        naturalCashOutFee: 0.3,
-        perWeekAmount: 1000,
-      };
-      await expect(getFees()).resolves.toStrictEqual(obj);
-    });
-    test('getFees console error any of endpoints breaks', async () => {
-      await expect(getFees()).resolves.toBe();
-    });
+describe('getFees', () => {
+  test('getFees returns correct data', async () => {
+    const obj = {
+      cashInFee: {
+        max: {
+          amount: 5,
+          currency: 'EUR',
+        },
+        percents: 0.03,
+      },
+      cashOutJuridical: {
+        min: {
+          amount: 0.5,
+          currency: 'EUR',
+        },
+        percents: 0.3,
+      },
+      cashOutNatural: {
+        percents: 0.3,
+        week_limit: {
+          amount: 1000,
+          currency: 'EUR',
+        },
+      },
+    };
+    await expect(getFees()).resolves.toStrictEqual(obj);
+  });
+  test('getFees throws error any of endpoints breaks', async () => {
+    await expect(() => getFees()).rejects.toEqual(Error);
   });
 });

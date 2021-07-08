@@ -67,8 +67,8 @@ function calculateJuridicalCashOutFee(transaction, cashOutJuridical) {
 }
 
 async function calculateFee(transactions) {
-  if (!(transactions instanceof Array)) throw new Error('Wrong data.');
-  if (transactions.length === 0) throw new Error('Empty array of transactions.');
+  if (!(transactions instanceof Array)) return Promise.reject(new Error('Wrong data.'));
+  if (transactions.length === 0) return Promise.reject(new Error('Empty array of transactions.'));
   const { cashInFee, cashOutNatural, cashOutJuridical } = await getFees();
   const countFee = calculateNaturalCashOutFee();
   let output;
