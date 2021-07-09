@@ -7,7 +7,9 @@ describe('fetchData', () => {
   test('fetchData returns object', () => {
     const obj = { max: { amount: 5, currency: 'EUR' }, percents: 0.03 };
     fetch.mockImplementation(() => new Promise((resolve) => {
-      resolve(obj);
+      resolve({
+        json: () => Promise.resolve().then(() => obj),
+      });
     }));
 
     expect(fetchData('cash-in')).resolves.toEqual(obj);
