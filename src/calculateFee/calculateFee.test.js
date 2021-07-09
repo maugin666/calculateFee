@@ -88,7 +88,7 @@ describe('returnFee', () => {
           currency: 'EUR',
         },
       },
-    ], params);
+    ], params, calculateNaturalCashOutFee());
     expect(console.log).toHaveBeenCalledWith('0.00');
   });
   test('returnFee returns correct fee for juridical cash out', () => {

@@ -7,22 +7,21 @@ const cashService = () => ({
 });
 
 async function getFees() {
-  let cashInFee;
-  let cashOutNatural;
-  let cashOutJuridical;
   const service = cashService();
   try {
-    cashInFee = await service.fetchCashIn();
-    cashOutNatural = await service.fetchCashOutNatural();
-    cashOutJuridical = await service.fetchCashOutJuridical();
+    const cashInFee = await service.fetchCashIn();
+    const cashOutNatural = await service.fetchCashOutNatural();
+    const cashOutJuridical = await service.fetchCashOutJuridical();
+
+    return {
+      cashInFee,
+      cashOutNatural,
+      cashOutJuridical,
+    };
   } catch (error) {
     throw new Error(error);
   }
-  return {
-    cashInFee,
-    cashOutNatural,
-    cashOutJuridical,
-  };
+
 }
 
 module.exports = { getFees, cashService };
