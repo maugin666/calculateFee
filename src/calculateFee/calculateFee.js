@@ -65,35 +65,38 @@ function calculateJuridicalCashOutFee(transaction, cashOutJuridical) {
   return fee < minJuridicalCashOutFeeAmount ? minJuridicalCashOutFeeAmount : fee;
 }
 
-async function calculateFee(transactions, { cashInFee, cashOutNatural, cashOutJuridical }) {
+function handleCashOut(transaction, { cashOutNatural, cashOutJuridical }, countFee) {
+  if (transaction.user_type === natural) {
+    return countFee(transaction, cashOutNatural);
+  }
+  if (transaction.user_type === juridical) {
+    return calculateJuridicalCashOutFee(transaction, cashOutJuridical);
+  }
+  throw new Error('Wrong user type.');
+}
+
+async function returnFee(transactions, { cashInFee, cashOutNatural, cashOutJuridical }, countFee) {
   if (!(transactions instanceof Array)) return Promise.reject(new Error('Wrong data.'));
   if (transactions.length === 0) return Promise.reject(new Error('Empty array of transactions.'));
-  const countFee = calculateNaturalCashOutFee();
-  let output;
 
-  transactions.forEach((transaction) => {
-    if (transaction.operation.currency !== currency) {
-      throw new Error(`Only supported currency is ${currency}.`);
-    }
-    if (transaction.type === cashIn) {
-      output = calculateCashIn(transaction, cashInFee);
-    } else if (transaction.type === cashOut) {
-      if (transaction.user_type === natural) {
-        output = countFee(transaction, cashOutNatural);
-      } else if (transaction.user_type === juridical) {
-        output = calculateJuridicalCashOutFee(transaction, cashOutJuridical);
-      } else {
-        throw new Error('Wrong user type.');
+  transactions
+    .map((transaction) => {
+      if (transaction.operation.currency !== currency) {
+        throw new Error(`Only supported currency is ${currency}.`);
       }
-    } else {
+      if (transaction.type === cashIn) {
+        return calculateCashIn(transaction, cashInFee);
+      }
+      if (transaction.type === cashOut) {
+        return handleCashOut(transaction, { cashOutNatural, cashOutJuridical }, countFee);
+      }
       throw new Error('Wrong transaction type.');
-    }
-    console.log(roundNumber(output < 1 ? roundFee(output) : output));
-  });
+    })
+    .forEach((output) => console.log(roundNumber(output < 1 ? roundFee(output) : output)));
 }
 
 module.exports = {
-  calculateFee,
+  returnFee,
   roundFee,
   calculateNaturalCashOutFee,
   calculateCashIn,

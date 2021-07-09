@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { readFile } = require('fs').promises;
 
-const { calculateFee } = require('./src/calculateFee/calculateFee');
+const { returnFee, calculateNaturalCashOutFee } = require('./src/calculateFee/calculateFee');
 const { getFees } = require('./src/operationFees/operationFees');
 
 async function init() {
@@ -9,7 +9,8 @@ async function init() {
   try {
     const data = await readFile(filePath.toString(), { encoding: 'utf8' });
     const fees = await getFees();
-    await calculateFee(JSON.parse(data), fees);
+    const countFee = calculateNaturalCashOutFee();
+    await returnFee(JSON.parse(data), fees, countFee);
   } catch (error) {
     console.error(error);
   }

@@ -9,6 +9,8 @@
     "ecmaVersion": 12
   },
   "rules": {
-    "no-console": "off"
+    "no-console": "off",
+    "no-param-reassign": [2, { "props": false }],
+    "consistent-return": "off"
   }
 }
