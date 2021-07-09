@@ -3,7 +3,27 @@ const {
   calculateCashIn,
   calculateJuridicalCashOutFee,
   returnFee,
+  prepareData,
 } = require('./calculateFee');
+
+describe('prepareData', () => {
+  test('prepareData returns correct fee for cash in', async () => {
+    console.log = jest.fn();
+    await prepareData([
+      {
+        date: '2016-01-05',
+        user_id: 1,
+        user_type: 'natural',
+        type: 'cash_in',
+        operation: {
+          amount: 200.0,
+          currency: 'EUR',
+        },
+      },
+    ]);
+    expect(console.log).toHaveBeenCalledWith('0.06');
+  });
+});
 
 describe('returnFee', () => {
   const params = {
@@ -12,13 +32,13 @@ describe('returnFee', () => {
     cashOutJuridical: { percents: 0.3, min: { amount: 0.5, currency: 'EUR' } },
   };
   test('returnFee throws error if argument is not array', () => {
-    expect(returnFee({}, params)).rejects.toEqual(Error);
+    expect(() => returnFee({}, params)).toThrow(Error);
   });
   test('returnFee throws error if array is empty', () => {
-    expect(returnFee([], params)).rejects.toEqual(Error);
+    expect(() => returnFee([], params)).toThrow(Error);
   });
   test('returnFee throws error if wrong currency', () => {
-    expect(returnFee([
+    expect(() => returnFee([
       {
         date: '2016-01-05',
         user_id: 1,
@@ -29,10 +49,10 @@ describe('returnFee', () => {
           currency: 'RUB',
         },
       },
-    ], params)).rejects.toEqual(Error);
+    ], params)).toThrow(Error);
   });
   test('returnFee throws error if wrong user type', () => {
-    expect(returnFee([
+    expect(() => returnFee([
       {
         date: '2016-01-05',
         user_id: 1,
@@ -43,10 +63,10 @@ describe('returnFee', () => {
           currency: 'EUR',
         },
       },
-    ], params)).rejects.toEqual(Error);
+    ], params)).toThrow(Error);
   });
   test('returnFee throws error if wrong transaction type', () => {
-    expect(returnFee([
+    expect(() => returnFee([
       {
         date: '2016-01-05',
         user_id: 1,
@@ -57,7 +77,39 @@ describe('returnFee', () => {
           currency: 'EUR',
         },
       },
-    ], params)).rejects.toEqual(Error);
+    ], params)).toThrow(Error);
+  });
+  test('returnFee returns correct small fee for cash in', () => {
+    console.log = jest.fn();
+    returnFee([
+      {
+        date: '2016-01-05',
+        user_id: 1,
+        user_type: 'natural',
+        type: 'cash_in',
+        operation: {
+          amount: 20.0,
+          currency: 'EUR',
+        },
+      },
+    ], params);
+    expect(console.log).toHaveBeenCalledWith('0.01');
+  });
+  test('returnFee returns correct max fee for cash in', () => {
+    console.log = jest.fn();
+    returnFee([
+      {
+        date: '2016-01-05',
+        user_id: 1,
+        user_type: 'natural',
+        type: 'cash_in',
+        operation: {
+          amount: 20000.0,
+          currency: 'EUR',
+        },
+      },
+    ], params);
+    expect(console.log).toHaveBeenCalledWith('5.00');
   });
   test('returnFee returns correct fee for cash in', () => {
     console.log = jest.fn();

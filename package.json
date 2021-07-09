@@ -20,7 +20,6 @@
     "homepage": "https://github.com/maugin666/calculateFee#readme",
     "dependencies": {
         "date-fns": "^2.22.1",
-        "dotenv": "^10.0.0",
         "node-fetch-cache": "^2.0.1"
     },
     "devDependencies": {

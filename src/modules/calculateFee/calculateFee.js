@@ -1,9 +1,10 @@
-const { checkSameWeek } = require('../utils/checkSameWeek/checkSameWeek');
-const { roundNumber } = require('../utils/roundNumber/roundNumber');
-const { roundFee } = require('../utils/roundFee/roundFee');
+const { checkSameWeek } = require('../../utils/checkSameWeek/checkSameWeek');
+const { roundNumber } = require('../../utils/roundNumber/roundNumber');
+const { roundFee } = require('../../utils/roundFee/roundFee');
+const { getFees } = require('../../api/getFees/getFees');
 const {
   cashIn, cashOut, natural, juridical, currency,
-} = require('../constants');
+} = require('../../constants/constants');
 
 function calculateNaturalCashOutFee() {
   const cashOutUsers = [];
@@ -23,20 +24,24 @@ function calculateNaturalCashOutFee() {
   return function countFee(transaction, cashOutNatural) {
     const naturalCashOutFee = cashOutNatural.percents;
     const perWeekAmount = cashOutNatural.week_limit.amount;
-    const userId = transaction.user_id;
-    const { date } = transaction;
-    const { amount } = transaction.operation;
+    const { user_id: userId, date, operation } = transaction;
+    const { amount } = operation;
     const cashOutUser = getSameWeekUser(userId, date);
     let totalAmount;
 
     if (cashOutUser) {
       const newAmount = cashOutUser.amount + amount;
+
       updateUser(cashOutUser, newAmount);
+
       if (cashOutUser.amount <= perWeekAmount) {
         return 0;
       }
+
       totalAmount = cashOutUser.amount - perWeekAmount;
+
       updateUser(cashOutUser, perWeekAmount);
+
       return (totalAmount * naturalCashOutFee) / 100;
     }
 
@@ -45,6 +50,7 @@ function calculateNaturalCashOutFee() {
     } else {
       totalAmount = perWeekAmount;
     }
+
     createUser({ userId, date, amount: totalAmount });
 
     return amount <= perWeekAmount ? 0 : ((amount - perWeekAmount) * naturalCashOutFee) / 100;
@@ -66,18 +72,21 @@ function calculateJuridicalCashOutFee(transaction, cashOutJuridical) {
 }
 
 function handleCashOut(transaction, { cashOutNatural, cashOutJuridical }, countFee) {
-  if (transaction.user_type === natural) {
+  const userType = transaction.user_type;
+
+  if (userType === natural) {
     return countFee(transaction, cashOutNatural);
   }
-  if (transaction.user_type === juridical) {
+  if (userType === juridical) {
     return calculateJuridicalCashOutFee(transaction, cashOutJuridical);
   }
+
   throw new Error('Wrong user type.');
 }
 
-async function returnFee(transactions, { cashInFee, cashOutNatural, cashOutJuridical }, countFee) {
-  if (!(transactions instanceof Array)) return Promise.reject(new Error('Wrong data.'));
-  if (transactions.length === 0) return Promise.reject(new Error('Empty array of transactions.'));
+function returnFee(transactions, { cashInFee, cashOutNatural, cashOutJuridical }, countFee) {
+  if (!(transactions instanceof Array)) throw new Error('Wrong data.');
+  if (transactions.length === 0) throw new Error('Empty array of transactions.');
 
   transactions
     .map((transaction) => {
@@ -94,6 +103,12 @@ async function returnFee(transactions, { cashInFee, cashOutNatural, cashOutJurid
     })
     .forEach((output) => console.log(roundNumber(output < 1 ? roundFee(output) : output)));
 }
+async function prepareData(data) {
+  const fees = await getFees();
+  const countFee = calculateNaturalCashOutFee();
+
+  returnFee(data, fees, countFee);
+}
 
 module.exports = {
   returnFee,
@@ -101,4 +116,5 @@ module.exports = {
   calculateNaturalCashOutFee,
   calculateCashIn,
   calculateJuridicalCashOutFee,
+  prepareData,
 };

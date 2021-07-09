@@ -1,13 +1,8 @@
-const { fetchData } = require('../utils/fetchData/fetchData');
-
-const cashService = () => ({
-  fetchCashIn: () => fetchData('cash-in'),
-  fetchCashOutNatural: () => fetchData('cash-out-natural'),
-  fetchCashOutJuridical: () => fetchData('cash-out-juridical'),
-});
+const { cashService } = require('../../services/cashService/cashService');
 
 async function getFees() {
   const service = cashService();
+
   try {
     const cashInFee = await service.fetchCashIn();
     const cashOutNatural = await service.fetchCashOutNatural();
@@ -21,7 +16,6 @@ async function getFees() {
   } catch (error) {
     throw new Error(error);
   }
-
 }
 
-module.exports = { getFees, cashService };
+module.exports = { getFees };

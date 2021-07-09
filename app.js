@@ -1,19 +1,14 @@
-require('dotenv').config();
-const { readFile } = require('fs').promises;
+const { readFileSync } = require('fs');
 
-const { returnFee, calculateNaturalCashOutFee } = require('./src/calculateFee/calculateFee');
-const { getFees } = require('./src/operationFees/operationFees');
+const { prepareData } = require('./src/modules/calculateFee/calculateFee');
 
-async function init() {
+function init() {
   const filePath = process.argv.slice(2);
-  try {
-    const data = await readFile(filePath.toString(), { encoding: 'utf8' });
-    const fees = await getFees();
-    const countFee = calculateNaturalCashOutFee();
-    await returnFee(JSON.parse(data), fees, countFee);
-  } catch (error) {
-    console.error(error);
-  }
+  const data = readFileSync(filePath.toString(), { encoding: 'utf8' });
+
+  if (!data) throw new Error("Can't read file");
+
+  prepareData(JSON.parse(data));
 }
 
 init();
